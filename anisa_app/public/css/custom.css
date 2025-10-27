@@ -1,0 +1,51 @@
+/* 🌈 Tema pastel lembut */
+body {
+    background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
+}
+
+/* 💳 Card buku */
+.book-card {
+    border-radius: 15px;
+    background-color: #fefefe;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 🖱️ Tombol kecil warna pastel */
+.btn-info {
+    background-color: #6cb2eb;
+    border: none;
+}
+.btn-warning {
+    background-color: #f1c40f;
+    border: none;
+}
+.btn-danger {
+    background-color: #e74c3c;
+    border: none;
+}
+
+/* 🔍 Search bar style */
+input[name="search"] {
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 15px;
+}
+
+/* 🌟 Animasi hover tombol */
+.btn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* 📱 Responsif grid card */
+@media (max-width: 768px) {
+    .book-card {
+        margin-bottom: 15px;
+    }
+}
+
