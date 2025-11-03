@@ -1,33 +1,117 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h2>Tambah Buku</h2>
+<div class="container py-5" style="max-width: 700px;">
+    <h2 class="fw-bold mb-4 text-primary text-center">➕ Tambah Buku Baru</h2>
 
-    <form action="{{ route('buku.store') }}" method="POST">
+    {{-- 🔹 Alert jika ada error validasi --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Terjadi kesalahan!</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- 📝 Form Tambah Buku --}}
+    <form action="{{ route('bukus.store') }}" method="POST" enctype="multipart/form-data" 
+          class="shadow p-4 rounded-4 bg-white border-0">
         @csrf
+
+        {{-- Judul --}}
         <div class="mb-3">
-            <label>Judul</label>
-            <input type="text" name="judul" class="form-control" required>
+            <label for="judul" class="form-label fw-semibold">Judul Buku</label>
+            <input type="text" id="judul" name="judul" value="{{ old('judul') }}"
+                   class="form-control rounded-3" placeholder="Masukkan judul buku..." required>
         </div>
+
+        {{-- Penulis --}}
         <div class="mb-3">
-            <label>Penulis</label>
-            <input type="text" name="penulis" class="form-control" required>
+            <label for="penulis" class="form-label fw-semibold">Penulis</label>
+            <input type="text" id="penulis" name="penulis" value="{{ old('penulis') }}"
+                   class="form-control rounded-3" placeholder="Masukkan nama penulis..." required>
         </div>
+
+        {{-- Penerbit --}}
         <div class="mb-3">
-            <label>Penerbit</label>
-            <input type="text" name="penerbit" class="form-control" required>
+            <label for="penerbit" class="form-label fw-semibold">Penerbit</label>
+            <input type="text" id="penerbit" name="penerbit" value="{{ old('penerbit') }}"
+                   class="form-control rounded-3" placeholder="Masukkan nama penerbit..." required>
         </div>
+
+        {{-- Tahun Terbit --}}
         <div class="mb-3">
-            <label>Tahun Terbit</label>
-            <input type="number" name="tahun_terbit" class="form-control" required>
+            <label for="tahun_terbit" class="form-label fw-semibold">Tahun Terbit</label>
+            <input type="number" id="tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit') }}"
+                   class="form-control rounded-3" placeholder="Contoh: 2024" required>
         </div>
+
+        {{-- Stok --}}
         <div class="mb-3">
-            <label>Stok</label>
-            <input type="number" name="stok" class="form-control" required>
+            <label for="stok" class="form-label fw-semibold">Stok</label>
+            <input type="number" id="stok" name="stok" value="{{ old('stok') }}"
+                   class="form-control rounded-3" min="0" placeholder="Masukkan jumlah stok..." required>
         </div>
-        <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('buku.index') }}" class="btn btn-secondary">Kembali</a>
+
+        {{-- Deskripsi --}}
+        <div class="mb-3">
+            <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi" class="form-control rounded-3" rows="4"
+                      placeholder="Tuliskan deskripsi buku...">{{ old('deskripsi') }}</textarea>
+        </div>
+
+        {{-- Sampul Buku --}}
+        <div class="mb-3">
+            <label for="sampulInput" class="form-label fw-semibold">📸 Sampul Buku</label>
+            <input type="file" id="sampulInput" name="sampul" 
+                   class="form-control rounded-3" accept="image/*">
+
+            {{-- Preview Gambar --}}
+            <div class="mt-3 text-center">
+                <img id="previewImage" src="#" alt="Preview Sampul" 
+                     class="rounded shadow-sm d-none" style="max-height: 200px;">
+            </div>
+        </div>
+
+        {{-- Upload PDF --}}
+        <div class="mb-3">
+            <label for="file_pdf" class="form-label fw-semibold">📕 Upload File Buku (PDF)</label>
+            <input type="file" name="file_pdf" class="form-control rounded-3" accept="application/pdf">
+            <small class="text-muted">*Opsional, hanya file PDF maksimal 10MB</small>
+        </div>
+
+        {{-- Tombol Aksi --}}
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ route('bukus.index') }}" class="btn btn-secondary px-4 fw-semibold">
+                ← Kembali
+            </a>
+            <button type="submit" class="btn btn-success px-4 fw-semibold">
+                💾 Simpan Buku
+            </button>
+        </div>
     </form>
 </div>
+
+{{-- 🖼️ Script Preview Gambar --}}
+<script>
+    document.getElementById('sampulInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('previewImage');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('d-none');
+            preview.src = '#';
+        }
+    });
+</script>
 @endsection
