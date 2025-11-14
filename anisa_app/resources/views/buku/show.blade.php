@@ -4,7 +4,12 @@
 <div class="container py-5" 
      style="background: linear-gradient(135deg, #eef2f3, #dfe9f3); min-height: 100vh;">
 
+    @php
+        $previous = url()->previous();
+    @endphp
+
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden mx-auto" style="max-width: 700px;">
+
         {{-- 🖼️ Sampul Buku --}}
         @if($buku->sampul)
             <img src="{{ asset('image/' . $buku->sampul) }}" 
@@ -34,16 +39,45 @@
                 {{ $buku->deskripsi }}
             </p>
 
+            {{-- 🏷️ Kategori --}}
+            <p class="mt-3"><strong>Kategori:</strong>
+                @foreach ($buku->kategoris as $kategori)
+                    <span class="badge bg-primary">{{ $kategori->nama }}</span>
+                @endforeach
+            </p>
+
+            <p><strong>Kategori:</strong>
+@foreach ($buku->kategoris as $kategori)
+    <span class="badge bg-primary">{{ $kategori->nama }}</span>
+@endforeach
+</p>
+
+
             {{-- 🎓 Tombol aksi --}}
             <div class="mt-4">
-                <a href="{{ route('bukus.index') }}" 
-                   class="btn btn-secondary rounded-3 fw-semibold shadow-sm px-4">
-                    ← Kembali
-                </a>
+                @auth
+                <a href="{{ $previous }}" class="btn btn-secondary rounded-3 fw-semibold shadow-sm px-4">
+                ← Kembali
+            </a>
+            @else
+    
+    @if (str_contains($previous, route('landing')))
+        <a href="{{ route('landing') }}" class="btn btn-secondary rounded-3 fw-semibold shadow-sm px-4">
+            ← Kembali
+        </a>
+    @else
+        <a href="{{ $previous }}" class="btn btn-secondary rounded-3 fw-semibold shadow-sm px-4">
+            ← Kembali
+        </a>
+    @endif
+@endauth
+
+                @auth
                 <a href="{{ route('bukus.edit', $buku->id) }}" 
                    class="btn btn-warning text-white rounded-3 fw-semibold shadow-sm px-4 ms-2">
                     ✏️ Edit
                 </a>
+                @endauth
             </div>
 
             {{-- 📖 Tombol Baca Buku (PDF) --}}

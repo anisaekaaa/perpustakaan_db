@@ -96,6 +96,13 @@
     </div>
 </div>
 
+<td>
+    @foreach ($buku->kategoris as $kategori)
+        <span class="badge bg-info text-dark">{{ $kategori->nama }}</span>
+    @endforeach
+</td>
+
+
 {{-- ✨ Efek Hover untuk Card --}}
 <style>
 .buku-card:hover {

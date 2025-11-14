@@ -33,6 +33,29 @@
             <input type="text" name="penulis" value="{{ old('penulis', $buku->penulis) }}" class="form-control rounded-3" required>
         </div>
 
+        {{-- Kategori --}}
+        
+        <div class="form-group mb-3">
+    <label class="mb-2">Kategori Buku</label>
+
+    <div class="d-flex flex-column gap-2">
+
+        @foreach($kategoris as $kategori)
+            <label class="d-flex align-items-center" style="gap: 6px;">
+                <input 
+                    type="checkbox" 
+                    name="kategori[]" 
+                    value="{{ $kategori->id }}"
+                    @if(isset($buku) && $buku->kategoris->contains($kategori->id)) checked @endif
+                >
+                {{ $kategori->nama }}
+            </label>
+        @endforeach
+
+    </div>
+</div>
+
+
         {{-- Penerbit --}}
         <div class="mb-3">
             <label class="form-label fw-semibold">Penerbit</label>

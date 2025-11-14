@@ -19,4 +19,9 @@ class Buku extends Model
         'sampul',
         'file_pdf', // ✅ tambahkan ini
     ];
+
+      public function kategoris()
+    {
+        return $this->belongsToMany(Kategori::class, 'buku_kategori');
+    }
 }

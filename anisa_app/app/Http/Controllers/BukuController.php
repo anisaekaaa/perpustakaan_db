@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\User;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,7 @@ class BukuController extends Controller
         $this->middleware('auth');
     }
 
-    // 🟩 Daftar semua buku
+    // 🟩 Daftar buku
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -35,10 +36,11 @@ class BukuController extends Controller
     // 🟦 Form tambah buku
     public function create()
     {
-        return view('buku.create');
+        $kategoris = Kategori::all();
+        return view('buku.create', compact('kategoris'));
     }
 
-    // 🟧 Simpan buku baru (gambar + PDF)
+    // 🟧 Simpan buku
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -49,29 +51,26 @@ class BukuController extends Controller
             'stok'         => 'required|integer|min:0',
             'deskripsi'    => 'nullable|string',
             'sampul'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'file_pdf'     => 'nullable|mimes:pdf|max:10240', // maksimal 10MB
+            'file_pdf'     => 'nullable|mimes:pdf',
+            'kategori'     => 'required|array',
         ]);
 
-        // Upload sampul
         if ($request->hasFile('sampul')) {
-            $file = $request->file('sampul');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('image'), $filename);
+            $filename = time() . '_' . $request->file('sampul')->getClientOriginalName();
+            $request->file('sampul')->move(public_path('image'), $filename);
             $validated['sampul'] = $filename;
         }
 
-        // Upload PDF
         if ($request->hasFile('file_pdf')) {
-            $pdf = $request->file('file_pdf');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move(public_path('pdf'), $pdfName);
+            $pdfName = time() . '_' . $request->file('file_pdf')->getClientOriginalName();
+            $request->file('file_pdf')->move(public_path('pdf'), $pdfName);
             $validated['file_pdf'] = $pdfName;
         }
 
-        Buku::create($validated);
+        $buku = Buku::create($validated);
+        $buku->kategoris()->sync($request->kategori);
 
-        return redirect()->route('bukus.index')
-                         ->with('success', '✅ Buku berhasil ditambahkan!');
+        return redirect()->route('bukus.index')->with('success', '✅ Buku berhasil ditambahkan!');
     }
 
     // 🟪 Detail buku
@@ -80,13 +79,17 @@ class BukuController extends Controller
         return view('buku.show', compact('buku'));
     }
 
-    // 🟨 Form edit buku
-    public function edit(Buku $buku)
-    {
-        return view('buku.edit', compact('buku'));
-    }
+    // 🟨 Edit buku
+  public function edit(Buku $buku)
+{
+    $kategoris = Kategori::all();
+    $selectedKategori = $buku->kategoris->pluck('id')->toArray(); // ✅ Tambahkan ini
 
-    // 🟥 Update buku (gambar + PDF)
+    return view('buku.edit', compact('buku', 'kategoris', 'selectedKategori'));
+}
+
+
+    // 🟥 Update buku
     public function update(Request $request, Buku $buku)
     {
         $validated = $request->validate([
@@ -97,35 +100,34 @@ class BukuController extends Controller
             'stok'         => 'required|integer|min:0',
             'deskripsi'    => 'nullable|string',
             'sampul'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'file_pdf'     => 'nullable|mimes:pdf|max:10240',
+            'file_pdf'     => 'nullable|mimes:pdf',
+            'kategori'     => 'required|array',
         ]);
 
-        // Update sampul (hapus lama kalau ada)
+        // Update sampul
         if ($request->hasFile('sampul')) {
             if ($buku->sampul && file_exists(public_path('image/' . $buku->sampul))) {
                 unlink(public_path('image/' . $buku->sampul));
             }
-            $file = $request->file('sampul');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('image'), $filename);
+            $filename = time() . '_' . $request->file('sampul')->getClientOriginalName();
+            $request->file('sampul')->move(public_path('image'), $filename);
             $validated['sampul'] = $filename;
         }
 
-        // Update PDF (hapus lama kalau ada)
+        // Update PDF
         if ($request->hasFile('file_pdf')) {
             if ($buku->file_pdf && file_exists(public_path('pdf/' . $buku->file_pdf))) {
                 unlink(public_path('pdf/' . $buku->file_pdf));
             }
-            $pdf = $request->file('file_pdf');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move(public_path('pdf'), $pdfName);
+            $pdfName = time() . '_' . $request->file('file_pdf')->getClientOriginalName();
+            $request->file('file_pdf')->move(public_path('pdf'), $pdfName);
             $validated['file_pdf'] = $pdfName;
         }
 
         $buku->update($validated);
+        $buku->kategoris()->sync($request->kategori);
 
-        return redirect()->route('bukus.index')
-                         ->with('success', '✏️ Data buku berhasil diperbarui!');
+        return redirect()->route('bukus.index')->with('success', '✏️ Buku berhasil diperbarui!');
     }
 
     // ⚫ Hapus buku
@@ -139,13 +141,25 @@ class BukuController extends Controller
             unlink(public_path('pdf/' . $buku->file_pdf));
         }
 
+        $buku->kategoris()->detach();
         $buku->delete();
 
-        return redirect()->route('bukus.index')
-                         ->with('success', '🗑️ Buku berhasil dihapus!');
+        return redirect()->route('bukus.index')->with('success', '🗑️ Buku berhasil dihapus!');
     }
 
-    // 📊 Dashboard
+    public function filterByKategori($id)
+{
+    $kategori = Kategori::findOrFail($id);
+
+    // Ambil buku yang punya kategori ini
+    $bukus = Buku::whereHas('kategoris', function ($q) use ($id) {
+        $q->where('kategori_id', $id);
+    })->paginate(10);
+
+    return view('buku.index', compact('bukus', 'kategori'));
+}
+
+    // 📊 Dashboard Admin
     public function dashboard()
     {
         $totalBuku = Buku::count();

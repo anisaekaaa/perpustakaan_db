@@ -2,7 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
+
+// 🌐 Landing Page (PUBLIC)
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/kategori/{id}', [BukuController::class, 'filterByKategori'])->name('buku.byKategori');
 
 // 🔓 Public routes: login & register
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -11,14 +16,12 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// 🔐 Protected routes
+// 🔐 Protected routes (hanya setelah login)
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('bukus.index');
-    });
+
+    // Dashboard
+    Route::get('/dashboard', [BukuController::class, 'dashboard'])->name('dashboard');
+
+    // CRUD Buku
     Route::resource('bukus', BukuController::class);
 });
-
-Route::get('/dashboard', [BukuController::class, 'dashboard'])
-    ->middleware('auth')
-    ->name('dashboard');
