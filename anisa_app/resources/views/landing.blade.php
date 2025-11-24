@@ -32,15 +32,15 @@
         }
 
         /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(77,182,227,0.3), rgba(77,182,227,0.3)),
-                        url('https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-            height: 90vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #0D1B2A;
-        }
+       .hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff; /* 🔥 warna judul jadi putih */
+}
 
         .btn-sky {
             background: #4DB6E3;
@@ -91,16 +91,16 @@
 <!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#" style="color:#0D1B2A;">PerpustakaanKu</a>
+        <a class="navbar-brand fw-bold" href="#" style="color:#4DB6E3;">PerpustakaanKu</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse text-end" id="nav">
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item mx-2"><a class="nav-link" href="#koleksi">Koleksi</a></li>
-                <li class="nav-item mx-2"><a class="nav-link" href="#kategori">Kategori</a></li>
-                <li class="nav-item mx-2"><a class="nav-link" href="#rekomendasi">Rekomendasi</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#koleksi" style="color:#4DB6E3">Koleksi</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#kategori" style="color:#4DB6E3">Kategori</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" href="#rekomendasi" style="color:#4DB6E3">Rekomendasi</a></li>
                 <li class="nav-item mx-2"><a href="{{ route('login') }}" class="btn btn-sky-outline">Login</a></li>
                 <li class="nav-item mx-2"><a href="{{ route('register') }}" class="btn btn-sky">Register</a></li>
             </ul>
@@ -143,15 +143,18 @@
     <div class="container text-center">
         <h2 class="fw-bold mb-3">Kategori Buku</h2>
 
-        @foreach($kategoris as $k)
+        @if($kategoris->isEmpty())
+            <p class="text-muted">BELUM ADA KATEGORI DITAMBAHKAN</p>
+        @else
+            @foreach($kategoris as $k)
             <a 
                 href="{{ route('buku.byKategori', $k->id) }}" 
                 class="chip"
-            >
-                {{ $k->nama }}
-            </a>
-        @endforeach
-
+        >
+                    {{ $k->nama }}
+                </a>
+            @endforeach
+        @endif
     </div>
 </section>
 
