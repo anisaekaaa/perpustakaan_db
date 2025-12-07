@@ -93,7 +93,7 @@
             </div>
         </div>
     </div>
-    @endforeach  {{-- 🔥 ini yang benar --}}
+    @endforeach 
 </div>
 
     {{-- 🔻 Pagination --}}

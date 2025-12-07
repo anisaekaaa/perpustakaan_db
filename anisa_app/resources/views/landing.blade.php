@@ -17,7 +17,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Navbar Transparan → Berubah saat Scroll */
         .navbar-custom {
             position: fixed;
             width: 100%;
@@ -31,16 +30,15 @@
             padding: 12px 0;
         }
 
-        /* Hero Section */
        .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-                url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-    height: 90vh;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: #ffffff; /* 🔥 warna judul jadi putih */
-}
+            background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                    url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #ffffff; 
+        }
 
         .btn-sky {
             background: #4DB6E3;
@@ -157,7 +155,6 @@
         @endif
     </div>
 </section>
-
 
 <!-- ✅ Rekomendasi -->
 <section id="rekomendasi" class="container py-5">

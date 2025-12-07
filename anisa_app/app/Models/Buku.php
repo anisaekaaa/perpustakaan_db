@@ -14,10 +14,9 @@ class Buku extends Model
         'penulis',
         'penerbit',
         'tahun_terbit',
-        'stok',
         'deskripsi',
         'sampul',
-        'file_pdf', // ✅ tambahkan ini
+        'file_pdf', 
     ];
 
       public function kategoris()

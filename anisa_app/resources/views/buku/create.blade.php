@@ -71,13 +71,6 @@
                    class="form-control rounded-3" placeholder="Contoh: 2024" required>
         </div>
 
-        {{-- Stok --}}
-        <div class="mb-3">
-            <label for="stok" class="form-label fw-semibold">Stok</label>
-            <input type="number" id="stok" name="stok" value="{{ old('stok') }}"
-                   class="form-control rounded-3" min="0" placeholder="Masukkan jumlah stok..." required>
-        </div>
-
         {{-- Deskripsi --}}
         <div class="mb-3">
             <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>

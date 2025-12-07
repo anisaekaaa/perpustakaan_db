@@ -68,12 +68,6 @@
             <input type="number" name="tahun_terbit" value="{{ old('tahun_terbit', $buku->tahun_terbit) }}" class="form-control rounded-3" required>
         </div>
 
-        {{-- Stok --}}
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Stok</label>
-            <input type="number" name="stok" value="{{ old('stok', $buku->stok) }}" class="form-control rounded-3" required>
-        </div>
-
         {{-- Deskripsi --}}
         <div class="mb-3">
             <label class="form-label fw-semibold">Deskripsi</label>
